@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Quill & Coin: student-led wealth planning. Get three ranked portfolio plans from your own risk profile.">
+<title>Quill & Coin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout concept: a Wall Street private-office page. Navy hero with a "what ₹99 covers" slip, a ticker rule, a four-step path, and a sample deck of three ranked plans. */
+:root {
+  --navy: #0B1F3A;
+  --gold: #D4AF37;
+  --bg: #F2F5F9;
+  --surface: #FFFFFF;
+  --ink: #0B1F3A;
+  --muted: #4A5D78;
+  --line: #D3DBE6;
+  --gold-text: #8A6A0E;
+  --hero-bg: #0B1F3A;
+  --hero-ink: #F4F1E8;
+  --hero-muted: #A9B8CE;
+  --hero-line: #29456B;
+  --cta-bg: #D4AF37;
+  --cta-ink: #0B1F3A;
+  --seg-a: #0B1F3A;
+  --seg-b: #D4AF37;
+  --seg-c: #7C93B3;
+  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --font-body: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #07142A; --surface: #0E2240; --ink: #EEF1F6; --muted: #9FB1C9; --line: #223B5E;
+    --gold-text: #D4AF37; --hero-bg: #040E1D; --hero-line: #1F3B60;
+    --seg-a: #EEF1F6; --seg-c: #5D7599;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #07142A; --surface: #0E2240; --ink: #EEF1F6; --muted: #9FB1C9; --line: #223B5E;
+  --gold-text: #D4AF37; --hero-bg: #040E1D; --hero-line: #1F3B60;
+  --seg-a: #EEF1F6; --seg-c: #5D7599;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.6; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 600; line-height: 1.12; text-wrap: balance; margin: 0; }
+p { margin: 0; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.wrap { width: 100%; max-width: 1120px; margin-inline: auto; padding-inline: 20px; }
+.eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--gold-text); }
+
+/* Buttons */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; padding: 0 26px; border-radius: 4px; font: 700 16px/1 var(--font-body); text-decoration: none; cursor: pointer; border: 1.5px solid transparent; transition: transform .15s ease, background .15s ease; }
+.btn-primary { background: var(--cta-bg); color: var(--cta-ink); }
+.btn-primary:hover { transform: translateY(-2px); }
+.btn-ghost { border-color: var(--hero-line); color: var(--hero-ink); }
+.btn-ghost:hover { border-color: var(--gold); }
+.btn-line { border-color: var(--ink); color: var(--ink); background: transparent; }
+.btn-line:hover { background: var(--ink); color: var(--bg); }
+
+/* Header + hero */
+.hero { background: var(--hero-bg); color: var(--hero-ink); }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 22px; }
+.brand { font-family: var(--font-display); font-weight: 600; font-size: 22px; letter-spacing: .01em; }
+.brand span { color: var(--gold); }
+.top-note { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; color: var(--hero-muted); text-transform: uppercase; }
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 56px; align-items: center; padding-block: 48px 72px; }
+.hero h1 { font-size: clamp(2.3rem, 5.4vw, 4rem); letter-spacing: -.015em; }
+.hero h1 em { font-style: italic; color: var(--gold); font-weight: 500; }
+.hero .lede { margin-top: 22px; max-width: 52ch; color: var(--hero-muted); font-size: 18px; }
+.cta-row { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 34px; }
+.fine { margin-top: 16px; font-size: 13px; color: var(--hero-muted); }
+
+/* The slip */
+.slip { background: var(--surface); color: var(--ink); border-radius: 6px; padding: 28px 26px 22px; position: relative; box-shadow: 0 30px 60px -30px rgba(0,0,0,.6); }
+.slip::after { content: ""; position: absolute; left: 0; right: 0; bottom: -9px; height: 10px; background: radial-gradient(circle at 8px 0, transparent 7px, var(--surface) 7.5px) 0 0 / 16px 10px repeat-x; }
+.slip-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-bottom: 14px; border-bottom: 1.5px dashed var(--line); }
+.slip-head b { font-family: var(--font-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--gold-text); font-weight: 500; }
+.slip ul { list-style: none; margin: 0; padding: 0; }
+.slip li { display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+.slip li span:last-child { color: var(--muted); text-align: right; font-size: 14px; }
+.slip-total { display: flex; justify-content: space-between; align-items: baseline; padding-top: 18px; gap: 12px; }
+.slip-total span { font-family: var(--font-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.slip-total strong { font-family: var(--font-display); font-size: 3rem; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.slip-total small { font-size: 13px; color: var(--muted); }
+
+/* Ticker */
+.ticker { background: var(--hero-bg); border-top: 1px solid var(--hero-line); overflow: hidden; white-space: nowrap; }
+.ticker-track { display: inline-flex; gap: 0; padding-block: 12px; animation: scroll 38s linear infinite; font-family: var(--font-mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--hero-muted); }
+.ticker-track span { padding-inline: 22px; }
+.ticker-track span:nth-child(even) { color: var(--gold); }
+@keyframes scroll { to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .ticker-track { animation: none; } .btn { transition: none; } }
+
+/* Sections */
+section.block { padding-block: 84px; }
+.head { max-width: 640px; display: grid; gap: 14px; margin-bottom: 44px; }
+.head h2 { font-size: clamp(1.8rem, 3.6vw, 2.6rem); letter-spacing: -.01em; }
+.head p { color: var(--muted); font-size: 17px; }
+
+/* Steps */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; border-top: 1.5px solid var(--ink); }
+.step { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 24px; padding: 30px 0; border-bottom: 1px solid var(--line); }
+.step-n { font-family: var(--font-display); font-size: 3.2rem; font-weight: 500; color: var(--gold-text); line-height: 1; }
+.step h3 { font-size: 1.5rem; margin-bottom: 8px; }
+.step p { color: var(--muted); max-width: 62ch; }
+.paths { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 22px; }
+.path { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 22px; display: grid; gap: 10px; align-content: start; }
+.path h4 { margin: 0; font-family: var(--font-display); font-size: 1.2rem; font-weight: 600; }
+.path p { font-size: 15px; }
+.path .btn { margin-top: 8px; min-height: 46px; justify-self: start; }
+
+/* Sample deck */
+.deck-wrap { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 28px; }
+.deck-bar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; padding-bottom: 20px; margin-bottom: 24px; border-bottom: 1.5px dashed var(--line); font-family: var(--font-mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.plans { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.plan { border: 1px solid var(--line); border-radius: 6px; padding: 22px; display: grid; gap: 16px; align-content: start; }
+.plan.first { border-color: var(--gold); border-width: 2px; }
+.pref { font-family: var(--font-mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--gold-text); }
+.plan h3 { font-size: 1.35rem; }
+.alloc { display: flex; height: 14px; border-radius: 2px; overflow: hidden; gap: 2px; }
+.alloc i { display: block; height: 100%; }
+.alloc i:nth-child(1) { background: var(--seg-a); }
+.alloc i:nth-child(2) { background: var(--seg-b); }
+.alloc i:nth-child(3) { background: var(--seg-c); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; color: var(--muted); }
+.legend span::before { content: ""; display: inline-block; width: 9px; height: 9px; margin-right: 6px; border-radius: 1px; }
+.legend span:nth-child(1)::before { background: var(--seg-a); }
+.legend span:nth-child(2)::before { background: var(--seg-b); }
+.legend span:nth-child(3)::before { background: var(--seg-c); }
+.rows { display: grid; gap: 0; font-size: 14px; }
+.rows div { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-top: 1px solid var(--line); }
+.rows div span:first-child { color: var(--muted); }
+.risk { display: inline-flex; gap: 4px; align-items: center; }
+.risk i { width: 16px; height: 6px; background: var(--line); border-radius: 1px; }
+.risk i.on { background: var(--gold-text); }
+.deck-note { margin-top: 20px; font-size: 13px; color: var(--muted); }
+
+/* FAQ */
+.faq { display: grid; gap: 0; max-width: 800px; border-top: 1.5px solid var(--ink); }
+.faq details { border-bottom: 1px solid var(--line); padding: 20px 0; }
+.faq summary { cursor: pointer; font-family: var(--font-display); font-size: 1.2rem; font-weight: 600; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; font-family: var(--font-mono); color: var(--gold-text); }
+.faq details[open] summary::after { content: "–"; }
+.faq details p { margin-top: 12px; color: var(--muted); max-width: 64ch; }
+
+/* Closing */
+.close { background: var(--hero-bg); color: var(--hero-ink); }
+.close-grid { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 28px; padding-block: 64px; }
+.close h2 { font-size: clamp(1.8rem, 3.6vw, 2.6rem); max-width: 18ch; }
+footer { background: var(--hero-bg); color: var(--hero-muted); border-top: 1px solid var(--hero-line); font-size: 13px; }
+footer .wrap { padding-block: 26px 34px; display: grid; gap: 10px; }
+footer .brand { color: var(--hero-ink); font-size: 18px; }
+
+#toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%) translateY(20px); background: var(--ink); color: var(--bg); padding: 12px 18px; border-radius: 4px; font-size: 14px; max-width: calc(100% - 32px); opacity: 0; pointer-events: none; transition: opacity .2s ease, transform .2s ease; z-index: 10; }
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+@media (max-width: 860px) {
+  .hero-grid { grid-template-columns: minmax(0, 1fr); gap: 40px; padding-block: 28px 56px; }
+  .plans, .paths { grid-template-columns: minmax(0, 1fr); }
+  .step { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  section.block { padding-block: 60px; }
+  .top-note { display: none; }
+  .btn { width: 100%; }
+  .path .btn { width: 100%; justify-self: stretch; }
+}
+</style>
+
+<style>body{margin:0}</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">Quill <span>&amp;</span> Coin</div>
+      <div class="top-note">Student-led wealth planning</div>
+    </div>
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow">Wealth planning, written by the next generation</p>
+        <h1 style="margin-top:16px">Know where you stand <em>before</em> you invest.</h1>
+        <p class="lede">Share your income, goals and comfort with risk. We turn them into three portfolio plans, ranked in order of preference, each with its risk and expected return laid out plainly.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#" data-link="pay">Pay ₹99 and get started</a>
+          <a class="btn btn-ghost" href="#how">See how it works</a>
+        </div>
+        <p class="fine">Secure online payment. One fee, no subscription.</p>
+      </div>
+      <aside class="slip" aria-label="What the fee covers">
+        <div class="slip-head"><b>What ₹99 covers</b><span style="font-size:13px;color:var(--muted)">One client</span></div>
+        <ul>
+          <li><span>Risk profile</span><span>From your own details</span></li>
+          <li><span>Google Meet session</span><span>With an intern analyst, optional</span></li>
+          <li><span>Plan deck</span><span>3 plans, ranked 1, 2, 3</span></li>
+          <li><span>Each plan shows</span><span>Allocation, risk, expected return</span></li>
+        </ul>
+        <div class="slip-total"><span>Total</span><strong>₹99</strong></div>
+      </aside>
+    </div>
+  </div>
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track" id="ticker"></div>
+  </div>
+</header>
+
+<main>
+  <section class="block" id="how">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">The path</p>
+        <h2>From payment to plans in four steps</h2>
+        <p>You choose how your details reach us. Either way, the result is the same deck.</p>
+      </div>
+      <ol class="steps">
+        <li class="step">
+          <div class="step-n">1</div>
+          <div>
+            <h3>Pay the ₹99 fee</h3>
+            <p>Pay online through our secure payment page. Keep your payment confirmation, because you will need it in the next step.</p>
+            <div class="cta-row" style="margin-top:18px"><a class="btn btn-line" href="#" data-link="pay" style="min-height:46px">Pay ₹99</a></div>
+          </div>
+        </li>
+        <li class="step">
+          <div class="step-n">2</div>
+          <div>
+            <h3>Choose how you share your details</h3>
+            <p>We need your income, commitments, goals and risk comfort to build your profile. Pick whichever suits you.</p>
+            <div class="paths">
+              <div class="path">
+                <h4>Book a session with an intern analyst</h4>
+                <p>Pick a slot on Google Meet. A trained student analyst walks you through the questions and fills in your profile with you.</p>
+                <a class="btn btn-primary" href="#" data-link="book">Book an appointment</a>
+              </div>
+              <div class="path">
+                <h4>Fill the form yourself</h4>
+                <p>Comfortable with finance terms? Complete the profile form on your own, in about ten minutes.</p>
+                <a class="btn btn-line" href="#" data-link="form">Open the form</a>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li class="step">
+          <div class="step-n">3</div>
+          <div>
+            <h3>Receive your plan deck</h3>
+            <p>After your profile is complete, we send a deck with three portfolio allocation plans, ranked as preference 1, 2 and 3. That is everything we provide.</p>
+          </div>
+        </li>
+        <li class="step">
+          <div class="step-n">4</div>
+          <div>
+            <h3>Act on it only if you want to</h3>
+            <p>If you wish to go ahead with a plan, we connect you with Nuvama Wealth, whose Authorised Person we are. There is no obligation to proceed.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">Inside the deck</p>
+        <h2>Three plans, ranked for you</h2>
+        <p>Plan 1 is the one that fits your profile best. Plans 2 and 3 show the alternatives and what you would trade off by choosing them.</p>
+      </div>
+      <div class="deck-wrap">
+        <div class="deck-bar"><span>Sample layout</span><span>Allocation plans, ranked by preference</span></div>
+        <div class="plans">
+          <article class="plan first">
+            <div class="pref">Preference 1</div>
+            <h3>Plan 1</h3>
+            <div class="alloc" role="img" aria-label="Sample allocation bar"><i style="width:50%"></i><i style="width:32%"></i><i style="width:18%"></i></div>
+            <div class="legend"><span>Equity</span><span>Debt</span><span>Others</span></div>
+            <div class="rows">
+              <div><span>Risk level</span><span class="risk" aria-label="Moderate"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span></div>
+              <div><span>Expected return</span><span>Range in your deck</span></div>
+              <div><span>Suited to</span><span>Your goals</span></div>
+            </div>
+          </article>
+          <article class="plan">
+            <div class="pref">Preference 2</div>
+            <h3>Plan 2</h3>
+            <div class="alloc" role="img" aria-label="Sample allocation bar"><i style="width:35%"></i><i style="width:45%"></i><i style="width:20%"></i></div>
+            <div class="legend"><span>Equity</span><span>Debt</span><span>Others</span></div>
+            <div class="rows">
+              <div><span>Risk level</span><span class="risk" aria-label="Low to moderate"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></div>
+              <div><span>Expected return</span><span>Range in your deck</span></div>
+              <div><span>Suited to</span><span>Your goals</span></div>
+            </div>
+          </article>
+          <article class="plan">
+            <div class="pref">Preference 3</div>
+            <h3>Plan 3</h3>
+            <div class="alloc" role="img" aria-label="Sample allocation bar"><i style="width:65%"></i><i style="width:20%"></i><i style="width:15%"></i></div>
+            <div class="legend"><span>Equity</span><span>Debt</span><span>Others</span></div>
+            <div class="rows">
+              <div><span>Risk level</span><span class="risk" aria-label="Moderate to high"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></div>
+              <div><span>Expected return</span><span>Range in your deck</span></div>
+              <div><span>Suited to</span><span>Your goals</span></div>
+            </div>
+          </article>
+        </div>
+        <p class="deck-note">This shows the layout of the deck only. The splits above are placeholders and not a recommendation. Your allocations and return ranges come from your own profile.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">Questions</p>
+        <h2>Before you pay</h2>
+      </div>
+      <div class="faq">
+        <details>
+          <summary>Who prepares my plans?</summary>
+          <p>Student analysts trained in portfolio and wealth management work with you on your profile. Your deck is prepared from the details you provide.</p>
+        </details>
+        <details>
+          <summary>What do you ask for in the form?</summary>
+          <p>Your income, regular commitments, savings, goals, time horizon and how you feel about risk. These are what we need to build a risk profile and decide how your plans are ranked.</p>
+        </details>
+        <details>
+          <summary>Do I have to invest after getting the deck?</summary>
+          <p>No. The deck is yours to keep. If you want to go ahead with a plan, we connect you with Nuvama Wealth. That step is your choice.</p>
+        </details>
+        <details>
+          <summary>Is this a guarantee of returns?</summary>
+          <p>No. Every plan shows its risk next to its expected return, and markets can move against any plan. Investments are subject to market risks.</p>
+        </details>
+        <details>
+          <summary>Can the intern take payment from me?</summary>
+          <p>No. The ₹99 fee is paid only through this page. Interns never collect money from clients.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <div class="close">
+    <div class="wrap close-grid">
+      <h2>Start with a clear picture of your money.</h2>
+      <a class="btn btn-primary" href="#" data-link="pay">Pay ₹99 and get started</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="brand">Quill &amp; Coin</div>
+    <p>Quill &amp; Coin is a student-led wealth planning initiative working as an Authorised Person of Nuvama Wealth.</p>
+    <p>Investments are subject to market risks. Please read all related documents carefully before investing. Expected returns are estimates and are not guaranteed.</p>
+  </div>
+</footer>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* Set these three links, then republish. Leave a value empty and its buttons show "coming soon". */
+var LINKS = {
+  pay:  "",  /* Razorpay payment page or payment link for the ₹99 fee */
+  book: "",  /* Google Calendar appointment schedule or similar booking page */
+  form: ""   /* Google Form for the client profile */
+};
+
+(function () {
+  var toast = document.getElementById("toast"), timer;
+  function say(msg) {
+    toast.textContent = msg; toast.classList.add("show");
+    clearTimeout(timer); timer = setTimeout(function () { toast.classList.remove("show"); }, 3200);
+  }
+  var names = { pay: "Payment", book: "Booking", form: "The form" };
+  document.querySelectorAll("a[data-link]").forEach(function (a) {
+    var key = a.getAttribute("data-link"), url = LINKS[key];
+    if (url) { a.href = url; a.target = "_blank"; a.rel = "noopener"; }
+    else { a.addEventListener("click", function (e) { e.preventDefault(); say(names[key] + " opens very soon. Please check back shortly."); }); }
+  });
+
+  var items = ["Risk profiling", "Asset allocation", "Plan 1", "Plan 2", "Plan 3", "Google Meet", "₹99", "Nuvama Wealth"];
+  var html = "";
+  for (var r = 0; r < 8; r++) items.forEach(function (t) { html += "<span>" + t + "</span>"; });
+  document.getElementById("ticker").innerHTML = html;
+})();
+</script>
+
+</body>
+</html>
